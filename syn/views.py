@@ -2,6 +2,7 @@ from syn import do_it_all
 from django.http import HttpResponse
 from json import dumps
 
+@csrf_exempt
 def home(request):
     p = request.POST
     if "s" in p:
