@@ -1,6 +1,7 @@
 from syn import do_it_all
 from django.http import HttpResponse
 from json import dumps
+from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def home(request):
