@@ -3,8 +3,14 @@ import nltk
 patterns = [
     (r'.*ing$', 'vbg'),               # gerunds
     (r'.*ed$', 'vbd'),               # gerunds
-    (r'.*s$', 'nns'),                 # plural nouns
+    (r'.*s$', ''),                 # plural nouns
     (r'.*es$', 'vbz'),                 # present tense, 3rd person singular
+    (r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+    (r'(The|the|A|a|An|an)$', 'AT'),   # articles
+    (r'.*able$', 'JJ'),                # adjectives
+    (r'.*ness$', 'NN'),                # nouns formed from adjectives
+    (r'.*ly$', 'RB'),                  # adverbs
+    (r'.*', 'NN')                      # nouns (default)
 ]
 
 lookup = nltk.defaultdict(list)
