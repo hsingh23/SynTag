@@ -1,7 +1,7 @@
 from re import sub, split
 from nltk import word_tokenize
-from nltk.corpus import wordnet as wn
-from itertools import chain
+# from nltk.corpus import wordnet as wn
+# from itertools import chain
 from random import choice
 nouns = ['nn', 'nns', 'n', 'uh']
 verbs = ['vb', 'vbd', 'vbg', 'vbn', 'vbp', 'vbz', 'v']
@@ -29,50 +29,26 @@ inp.close()
 
 
 def tagged(search):
-    normalized = sub(r'[^A-z0-9; ,.\?!]', '', search.lower())
-    normalized_sents = split(r'[.!\?]', normalized)
-    tokenized_sents = filter(lambda a: len(a) != 0, [word_tokenize(a) for a in normalized_sents])
+    cleaned = sub(r'[^A-z0-9; ,.\?!]', '', search.lower())
+    normalized_sents = split(r'[.!\?]', cleaned)
+    tokenized_sents = filter(lambda a: len(a) != 0, (word_tokenize(a) for a in normalized_sents))
     tagged_sents = tagger.batch_tag(tokenized_sents)
     return tagged_sents
 
 
-def filtered_for_syn(sents):
-    my_sents = []
-    for sent in sents:
-        my_sent = []
-        for word_pair in sent:
-            word = word_pair[0]
-            pos = word_pair[1].lower()
-            if pos in simple_tags:
-                try:
-                    my_sent.append(tensify(syn[word + "." + simple_tags[pos]], pos))
-                except KeyError:
-                    # my_sent.append([word])
-                    # Next part makes the returned objects kind of unreliable in a funny way - enable later
-                    w = tensify(list(set(chain.from_iterable(
-                        [s.lemma_names for s in wn.synsets(word, simple_tags[pos])]
-                    ))), pos)
-                    my_sent.append(w if len(w) > 0 else [word])
-            else:
-                my_sent.append([word])
-        my_sents.append(my_sent)
-    return my_sents
-
-fed = filtered_for_syn
+def filtered_for_syn(sents, p=1):
+    return [[get_syn_for_word_pair(word, pos) for word, pos in ((word_pair[0], word_pair[1].lower()) for word_pair in sent)] for sent in sents]
 
 
 def make_sentence(syn_sents):
     mystr = []
     for sent in syn_sents:
-        for i, a in enumerate(sent):
-            mystr.append(choice(a).title() if i == 0 else choice(a))
+        mystr.append(choice(sent[0]).title())
+        for a in sent[1:]:
+            mystr.append(choice(a))
         mystr.append(".")
-    return " ".join(mystr).replace("_", " ")
-
-
-def do_it_all(s):
-    a = make_sentence(filtered_for_syn(tagged(s)))
-    return sub(r' (?=[\.\?,;])', '', a)
+    # sub out the bad stuff when making sentence
+    return sub(r' (?=[\.\?,;])', '', " ".join(mystr).replace("_", " "))
 
 # Helper functions
 
@@ -119,3 +95,15 @@ def tensify(syn_list, pos):
     else:
         return syn_list
     return s_list
+
+
+def get_syn_for_word_pair(word, pos):
+    if pos in simple_tags:
+        if word[:-1] + "." + simple_tags[pos] in syn:
+            return tensify(syn[word[:-1] + "." + simple_tags[pos]], pos)
+        elif word + "." + simple_tags[pos] in syn:
+            return tensify(syn[word + "." + simple_tags[pos]], pos)
+        else:
+            return [word]
+    else:
+        return [word]
