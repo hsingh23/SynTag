@@ -48,11 +48,11 @@ def filtered_for_syn(sents):
                     my_sent.append(tensify(syn[word + "." + simple_tags[pos]], pos))
                 except KeyError:
                     pass
-                    # Makes the data more unreliable - but may be a feature to enable later
-                    # w = tensify(list(set(chain.from_iterable(
-                    #     [s.lemma_names for s in wn.synsets(word, simple_tags[pos])]
-                    # ))), pos)
-                    # my_sent.append(w if len(w) > 0 else [word])
+                    Makes the data more unreliable - but may be a feature to enable later
+                    w = tensify(list(set(chain.from_iterable(
+                        [s.lemma_names for s in wn.synsets(word, simple_tags[pos])]
+                    ))), pos)
+                    my_sent.append(w if len(w) > 0 else [word])
             else:
                 my_sent.append([word])
         my_sents.append(my_sent)
