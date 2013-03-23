@@ -47,8 +47,8 @@ def filtered_for_syn(sents):
                 try:
                     my_sent.append(tensify(syn[word + "." + simple_tags[pos]], pos))
                 except KeyError:
-                    pass
-                    Makes the data more unreliable - but may be a feature to enable later
+                    # my_sent.append([word])
+                    # Next part makes the returned objects kind of unreliable in a funny way - enable later
                     w = tensify(list(set(chain.from_iterable(
                         [s.lemma_names for s in wn.synsets(word, simple_tags[pos])]
                     ))), pos)
@@ -72,7 +72,7 @@ def make_sentence(syn_sents):
 
 def do_it_all(s):
     a = make_sentence(filtered_for_syn(tagged(s)))
-    return sub(r' (?=[\.\?,])', '', a)
+    return sub(r' (?=[\.\?,;])', '', a)
 
 # Helper functions
 
