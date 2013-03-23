@@ -3,7 +3,7 @@ from nltk import word_tokenize
 from nltk.corpus import wordnet as wn
 from itertools import chain
 from random import choice
-nouns = ['nn', 'nns', 'n']
+nouns = ['nn', 'nns', 'n', 'uh']
 verbs = ['vb', 'vbd', 'vbg', 'vbn', 'vbp', 'vbz', 'v']
 adj = ['jj', 'jjr', 'jjs', 'jjt', 'a']
 # adverb = ['rb', 'rbr', 'rbs', 'r']
@@ -47,6 +47,8 @@ def filtered_for_syn(sents):
                 try:
                     my_sent.append(tensify(syn[word + "." + simple_tags[pos]], pos))
                 except KeyError:
+                    pass
+                    # Makes the data more unreliable - but may be a feature to enable later
                     w = tensify(list(set(chain.from_iterable(
                         [s.lemma_names for s in wn.synsets(word, simple_tags[pos])]
                     ))), pos)
@@ -92,7 +94,7 @@ def tensify(syn_list, pos):
                     s_list.append(word + "ed")
 
     # present participle or gerund
-    if pos == "vbg":
+    elif pos == "vbg":
         for word, tag in ((a, tagger.tag[a]) for a in s_list):
             if tag == pos:
                 s_list.append(word)
@@ -104,7 +106,7 @@ def tensify(syn_list, pos):
                 if True or real_word(word + "ing"):
                     s_list.append(word + "ing")
     # present tense, 3rd person singular
-    if pos == "vbz":
+    elif pos == "vbz":
         for word, tag in ((a, tagger.tag[a]) for a in s_list):
             if tag == pos:
                 s_list.append(word)
