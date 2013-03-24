@@ -45,7 +45,10 @@ def make_sentence(syn_sents):
     for sent in syn_sents:
         mystr.append(choice(sent[0]).title())
         for a in sent[1:]:
-            mystr.append(choice(a))
+            try:
+                mystr.append(choice(a))
+            except Exception:
+                pass
         mystr.append(".")
     # sub out the bad stuff when making sentence
     return sub(r' (?=[\.\?,;])', '', " ".join(mystr).replace("_", " "))
