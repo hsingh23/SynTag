@@ -14,7 +14,7 @@ for synset in wn.all_synsets():
     syn[dname] = set(lemmas) if dname not in syn else syn[dname].union(set(lemmas))
 
 for k, v in syn.iteritems():
-    if len(v) > 1 or k.partition(".")[0] not in v:
+    if len(v) > 0 and k.partition(".")[0] not in v:
         compiled_syn[k] = list(v)
         json_syn[k] = json.dumps(list(v))
 
