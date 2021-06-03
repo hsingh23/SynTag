@@ -1,4 +1,4 @@
-Django==1.5
+Django==2.2.24
 PyYAML==3.10
 argparse==1.2.1
 distribute==0.6.24
